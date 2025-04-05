@@ -1,31 +1,26 @@
-// src/App.js
 import React, { useEffect, useState } from 'react';
 import './style.css';
 
 function App() {
-  const [results, setResults] = useState([]);
+  const [songs, setSongs] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchSearch = async () => {
+    const fetchTopPopSongs = async () => {
       try {
-        // Facem fetch către proxy-ul Node
-        const response = await fetch('http://localhost:3001/api/search');
-        
+        const response = await fetch('http://localhost:3001/api/youtube-music-pop');
         if (!response.ok) {
           throw new Error(`Eroare la fetch. Cod: ${response.status}`);
         }
-
         const data = await response.json();
-        // iTunes returnează { resultCount, results: [...] }
-        setResults(data.results);
+        setSongs(data);
       } catch (err) {
         setError(err.message);
         console.error('Eroare la preluarea melodiilor:', err);
       }
     };
 
-    fetchSearch();
+    fetchTopPopSongs();
   }, []);
 
   return (
@@ -44,24 +39,15 @@ function App() {
 
       <section className="hero">
         {error && <p className="error-message">Eroare: {error}</p>}
-        {results.length === 0 && !error && (
-          <p className="loading-message">Se încarcă rezultatele...</p>
-        )}
+        {songs.length === 0 && !error && <p className="loading-message">Se încarcă rezultatele...</p>}
 
-        {results.map((item, idx) => (
+        {songs.map((song, idx) => (
           <div key={idx} className={`box${idx + 1}`}>
-            {/* Fiecare item poate conține trackName, artistName, previewUrl etc. */}
-            <h1>{item.trackName}</h1>
-            <p>{item.artistName}</p>
-
-            {item.artworkUrl100 && (
-              <img src={item.artworkUrl100} alt={item.trackName} className="cover" />
+            <h1>{song.snippet.title}</h1>
+            <p>{song.snippet.channelTitle}</p>
+            {song.snippet.thumbnails.high && (
+              <img src={song.snippet.thumbnails.high.url} alt={song.snippet.title} className="cover" />
             )}
-
-            {/* Poți afișa și un buton audio pentru preview */}
-            {/* {item.previewUrl && (
-              <audio controls src={item.previewUrl} />
-            )} */}
           </div>
         ))}
       </section>
