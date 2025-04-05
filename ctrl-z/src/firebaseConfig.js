@@ -1,6 +1,7 @@
 // filepath: c:\Users\Iulia\OneDrive\Documents\GitHub\culturedropv2\ctrl-z\src\firebaseConfig.js
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: "AIzaSyD-3HhK--nt0qlUmQ7GblJ8-bx85VmzS6Q",
@@ -14,3 +15,4 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
+export const db = getFirestore(app);
