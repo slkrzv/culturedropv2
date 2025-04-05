@@ -1,36 +1,39 @@
+// src/App.js
 import React, { useEffect, useState } from 'react';
 import './style.css';
 
-const HeroSection = () => {
-  const [topTracks, setTopTracks] = useState([]);
+function App() {
+  const [results, setResults] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchTopTracks = async () => {
+    const fetchSearch = async () => {
       try {
-        const response = await fetch('https://shazam-core.p.rapidapi.com/v1/charts/world', {
-          method: 'GET',
-          headers: {
-            'X-RapidAPI-Key': '0916d5277emsh1043f5d23b05e37p12570cjsne27236e743fb', // ← înlocuiește cu cheia ta de pe RapidAPI
-            'X-RapidAPI-Host': 'shazam-core.p.rapidapi.com'
-          }
-        });
+        // Facem fetch către proxy-ul Node
+        const response = await fetch('http://localhost:3001/api/search');
+        
+        if (!response.ok) {
+          throw new Error(`Eroare la fetch. Cod: ${response.status}`);
+        }
 
         const data = await response.json();
-        setTopTracks(data.slice(0, 4)); // Primele 4 melodii
-      } catch (error) {
-        console.error('Eroare la preluarea melodiilor:', error);
+        // iTunes returnează { resultCount, results: [...] }
+        setResults(data.results);
+      } catch (err) {
+        setError(err.message);
+        console.error('Eroare la preluarea melodiilor:', err);
       }
     };
 
-    fetchTopTracks();
+    fetchSearch();
   }, []);
 
   return (
-    <section className="w-full h-screen bg-gray-100 flex flex-col items-center justify-center px-4">
-      <div className="navstyle w-full max-w-5xl">
-        <nav className="flex justify-between items-center mb-8">
-          <h1 className="text-2xl font-bold">Logo</h1>
-          <ul className="flex gap-6 text-lg">
+    <div className="container">
+      <div className="navstyle">
+        <nav>
+          <h1 className="logo">Logo</h1>
+          <ul>
             <li><a href="/">Acasă</a></li>
             <li><a href="/">Despre</a></li>
             <li><a href="/">Servicii</a></li>
@@ -39,19 +42,31 @@ const HeroSection = () => {
         </nav>
       </div>
 
-      <section className="hero grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 w-full max-w-5xl">
-        {topTracks.map((track, index) => (
-          <div key={index} className={`box${index + 1} bg-white p-4 shadow-lg rounded-xl flex flex-col items-center text-center`}>
-            <h2 className="text-xl font-semibold mb-2">{track.title}</h2>
-            <p className="text-gray-600 mb-2">{track.subtitle}</p>
-            {track.images?.coverart && (
-              <img src={track.images.coverart} alt={track.title} className="rounded-md w-32 h-32 object-cover" />
+      <section className="hero">
+        {error && <p className="error-message">Eroare: {error}</p>}
+        {results.length === 0 && !error && (
+          <p className="loading-message">Se încarcă rezultatele...</p>
+        )}
+
+        {results.map((item, idx) => (
+          <div key={idx} className={`box${idx + 1}`}>
+            {/* Fiecare item poate conține trackName, artistName, previewUrl etc. */}
+            <h1>{item.trackName}</h1>
+            <p>{item.artistName}</p>
+
+            {item.artworkUrl100 && (
+              <img src={item.artworkUrl100} alt={item.trackName} className="cover" />
             )}
+
+            {/* Poți afișa și un buton audio pentru preview */}
+            {/* {item.previewUrl && (
+              <audio controls src={item.previewUrl} />
+            )} */}
           </div>
         ))}
       </section>
-    </section>
+    </div>
   );
-};
+}
 
-export default HeroSection;
+export default App;

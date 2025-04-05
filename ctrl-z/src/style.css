@@ -1,31 +1,51 @@
-@import url('https://fonts.googleapis.com/css2?family=Sedgwick+Ave&display=swap');
-*{
-    list-style: none;
-    text-decoration: none;
+/* style.css */
+* {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-}
-
-nav{
+  }
+  .container {
+    font-family: Arial, sans-serif;
+  }
+  
+  .navstyle {
+    background: radial-gradient(circle, rgba(30,39,50,1) 0%, rgba(42,49,82,1) 92%, rgba(32,36,46,1) 100%);
+    color: white;
+    padding: 1rem;
+  }
+  .navstyle nav {
     display: flex;
-    width: 90%;
-    margin: auto;
     justify-content: space-between;
-    min-height: 5rem;
     align-items: center;
-}
-nav ul{
+  }
+  .navstyle ul {
     display: flex;
-    width: 30rem;
-    justify-content: space-between;
-}
-.navstyle{ 
+    gap: 1rem;
+  }
+  .navstyle a {
     color: white;
-    background: rgb(30,39,50);
-background: radial-gradient(circle, rgba(30,39,50,1) 0%, rgba(42,49,82,1) 92%, rgba(32,36,46,1) 100%);
-}
-.navstyle a{
+    font-size: 1.2rem;
+  }
+  
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  
+  .box1, .box2, .box3, .box4 {
+    border-radius: 12px;
+    background: #1A2545;
     color: white;
-    font-family: "Sedgwick Ave", cursive;
-    font-size: 1.5rem;
-}
+    padding: 1rem;
+    min-height: 10rem;
+  }
+  
+  .cover {
+    margin-top: 1rem;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+  }
+  
